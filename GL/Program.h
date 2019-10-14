@@ -1,24 +1,24 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
-#include <vector>
-
+#include "GL_types.h"
 #include "Shader.h"
 
 namespace GL {
-
-using uint = unsigned int;
 
 class Program
 {
 public:
     Program();
-    Program &addShader(const Shader &shader);
-    Program &link();
+    Program &attachShader(const Shader &shader);
+    uint32 getID() const {return _id;}
 
 private:
-    uint _id;
+    uint32 _id;
 };
-}
+
+} //namespace GL
+
+
 
 #endif // PROGRAM_H

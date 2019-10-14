@@ -8,10 +8,15 @@ SOURCES += \
     GL.cpp \
     glad.c \
     Window.cpp \
+    Color.cpp \
     Shader.cpp \
     VertexShader.cpp \
     FragmentShader.cpp \
-    Program.cpp
+    Program.cpp \
+    VAO.cpp \
+    Vertex.cpp \
+    VBO.cpp \
+    Attribute.cpp
 
 
 unix|win32: LIBS += -L$$PWD/bin/ -lglfw3dll
@@ -23,10 +28,19 @@ INCLUDEPATH += $$PWD/bin/include
 
 HEADERS += \
     Window.h \
+    GL.h \
+    GL_types.h \
+    Color.h \
     Shader.h \
     VertexShader.h \
     FragmentShader.h \
     Program.h \
-    GL.h \
-    Vertex.h
+    VAO.h \
+    Vertex.h \
+    VBO.h \
+    Attribute.h
+
+DISTFILES += \
+    Vertex.vsh \
+    Fragment.fsh
 

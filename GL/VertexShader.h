@@ -10,6 +10,9 @@ class VertexShader : public Shader
 public:
     VertexShader();
 };
-}
+
+} //namespace GL
+
+
 
 #endif // VERTEXSHADER_H

@@ -10,6 +10,9 @@ class FragmentShader : public Shader
 public:
     FragmentShader();
 };
-}
+
+} //namespace GL
+
+
 
 #endif // FRAGMENTSHADER_H

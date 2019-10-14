@@ -1,0 +1,13 @@
+release/main.o
+release/GL.o
+release/glad.o
+release/Window.o
+release/Color.o
+release/Shader.o
+release/VertexShader.o
+release/FragmentShader.o
+release/Program.o
+release/VAO.o
+release/Vertex.o
+release/VBO.o
+release/Attribute.o

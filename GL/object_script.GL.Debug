@@ -1,0 +1,13 @@
+debug/main.o
+debug/GL.o
+debug/glad.o
+debug/Window.o
+debug/Color.o
+debug/Shader.o
+debug/VertexShader.o
+debug/FragmentShader.o
+debug/Program.o
+debug/VAO.o
+debug/Vertex.o
+debug/VBO.o
+debug/Attribute.o

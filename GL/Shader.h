@@ -1,23 +1,26 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <string>
+#include "GL_types.h"
 
 namespace GL {
-
-using string = std::string;
-using uint = unsigned int;
 
 class Shader
 {
 public:
-    Shader& setSource(const string& src);
-    Shader& compile();
-    uint getId() const {return _id;}
+    Shader();
+    Shader &setSource(const string &file_name);
+    uint32 getID() const {return _id;}
+    string getSource() const {return _src;}
+    ~Shader();
 
 protected:
-    uint _id;
+    uint32 _id;
+    string _src;
 };
-}
+
+} //namespace GL
+
+
 
 #endif // SHADER_H
