@@ -12,6 +12,7 @@ public:
     Shader &setSource(const string &file_name);
     uint32 getID() const {return _id;}
     string getSource() const {return _src;}
+    bool isSourceSet() const {return !_src.empty();}
     ~Shader();
 
 protected:

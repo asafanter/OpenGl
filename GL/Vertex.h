@@ -20,7 +20,6 @@ public:
     real32 getX() const {return _x;}
     real32 getY() const {return _y;}
     real32 getZ() const {return _z;}
-    uint32 getSize() const {return _size;}
     Color getColor() const {return _color;}
 
 private:
@@ -28,7 +27,6 @@ private:
     real32 _y;
     real32 _z;
     Color _color;
-    uint32 _size;
 };
 
 } //namespace GL

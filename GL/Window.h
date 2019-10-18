@@ -14,7 +14,7 @@ class Window
 public:
 
     Window(const uint16& width = 800, const uint16& height = 600, const string& title = "window");
-    Window(const uint16 &width, const uint16 &height, const string &title, const Color &background_color);
+    Window(const uint16 &width, const uint16 &height, const string &title, const GL::Color &background_color);
     ~Window();
     bool isRunning() const;
     Window &swapBuffers();

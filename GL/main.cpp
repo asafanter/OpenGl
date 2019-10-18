@@ -11,6 +11,9 @@
 #include "Vertex.h"
 #include "Attribute.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 
 #include <iostream>
 #include <string>
@@ -21,68 +24,60 @@ void processInput(GLFWwindow *window);
 
 int main()
 {
-    GL::Vertex v1(0.0f, 0.0f, 0.0f, GL::Color::RED);
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("C:/Users/asafanter/Desktop/wall.jpg", &width, &height, &nrChannels, 0);
+
+    GL::Vertex v1(0.0f, 0.0f, 0.0f, GL::Color::GREEN);
     GL::Vertex v2(0.5f, 0.0f, 0.0f, GL::Color::RED);
-    GL::Vertex v3(0.0f, 0.5f, 0.0f, GL::Color::RED);
+    GL::Vertex v3(0.0f, 0.5f, 0.0f, GL::Color::BLUE);
 
     GL::Vertex v4(-0.7f, 0.0f, 0.0f, GL::Color::BLUE);
-    GL::Vertex v5(-0.3f, 0.0f, 0.0f, GL::Color::BLUE);
+    GL::Vertex v5(-0.3f, 0.0f, 0.0f, GL::Color::GREEN);
     GL::Vertex v6(-0.7f, 0.2f, 0.0f, GL::Color::BLUE);
-    GL::Vertex v7(-0.3f, 0.2f, 0.0f, GL::Color::BLUE);
+    GL::Vertex v7(-0.3f, 0.2f, 0.0f, GL::Color::RED);
 
     std::vector<GL::Vertex> vertices1 = {v1, v2, v3};
     std::vector<GL::Vertex> vertices2 = {v4, v5, v6, v7};
 
 
-    GL::Window window(800, 600, "anter");
-    window.setBackgroundColor(GL::Color::BLACK);
-
-    GL::VertexShader v_shader;
-    v_shader.setSource("Vertex.vsh");
-
-    GL::FragmentShader f_shader;
-    f_shader.setSource("Fragment.fsh");
-
     GL::GL gl;
+
+    GL::Window window(800, 600, "asaf anter", GL::Color::WHITE);
+
     gl.attachWindow(window);
-    gl.compileShader(v_shader).compileShader(f_shader);
 
     GL::Program program;
-    program.attachShader(v_shader).attachShader(f_shader);
+
+    GL::VertexShader v_s;
+    GL::FragmentShader f_s;
+
+    v_s.setSource("Vertex.vsh");
+    f_s.setSource("Fragment.fsh");
+
+    gl.compileShader(v_s).compileShader(f_s);
+    program.attachShader(v_s).attachShader(f_s);
 
     gl.linkProgram(program);
 
-    GL::VAO vao1;
-    GL::VBO vbo1;
+    GL::VAO vao;
 
-    GL::VAO vao2;
-    GL::VBO vbo2;
+    GL::VBO vbo;
 
-    vao1.setPremitive(GL::VAO::Premitive::TRIANGLES);
-    vao2.setPremitive(GL::VAO::Premitive::LINES);
-
-    vbo1.setVertices(vertices1);
-    vbo2.setVertices(vertices2);
+    vbo.setVertices(vertices1);
+    vao.setPremitive(GL::Premitive::TRIANGLES);
 
     GL::Attribute pos_atr(0, 0);
     GL::Attribute color_atr(1, 12);
 
-    vbo1.addAttribute(pos_atr);
-    vbo1.addAttribute(color_atr);
+    vbo.addAttribute(pos_atr).addAttribute(color_atr);
 
-    vbo2.addAttribute(pos_atr);
-    vbo2.addAttribute(color_atr);
+    vao.setVBO(vbo);
 
-    gl.bindVAO(vao1);
-    gl.bindVBO(vbo1);
+    gl.addVAO(vao);
 
-    gl.bindVAO(vao2);
-    gl.bindVBO(vbo2);
+    gl.setLineWidth(5);
 
-    gl.addVAO(vao1);
-    gl.addVAO(vao2);
-
-    gl.run(program);
+    gl.run();
 
     return 0;
 }

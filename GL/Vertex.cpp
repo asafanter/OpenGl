@@ -6,8 +6,7 @@ Vertex::Vertex(const real32 &x, const real32 &y, const real32 &z, const Color &c
     _x(x),
     _y(y),
     _z(z),
-    _color(color),
-    _size(size)
+    _color(color)
 {
 
 }
@@ -15,13 +14,6 @@ Vertex::Vertex(const real32 &x, const real32 &y, const real32 &z, const Color &c
 Vertex &Vertex::setColor(const Color &new_color)
 {
     _color = new_color;
-
-    return *this;
-}
-
-Vertex &Vertex::setSize(const uint32 &new_size)
-{
-    _size = new_size;
 
     return *this;
 }

@@ -18,7 +18,8 @@ public:
     VBO &setVertices(const std::vector<Vertex> &new_vertices);
     VBO &addAttribute(const Attribute &atr);
     std::vector<Vertex> getVertices() const {return _vertices;}
-    ~VBO();
+    bool hasVertices() const {return _vertices.size() > 0;}
+    bool hasAttributes() const {return _attributes.size() > 0;}
 
 private:
     uint32 _id;

@@ -29,4 +29,15 @@ using real64 = double;
 
 using string = std::string;
 
+namespace GL {
+
+enum class Premitive
+{
+    POINTS,
+    LINES,
+    TRIANGLES
+};
+
+} //namespace GL
+
 #endif // GL_TYPES_H

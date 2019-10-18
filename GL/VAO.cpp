@@ -11,7 +11,14 @@ VAO::VAO() :
     glGenVertexArrays(1, &_id);
 }
 
-VAO &VAO::setPremitive(const VAO::Premitive &new_premitive)
+VAO &VAO::setVBO(const VBO &vbo)
+{
+    _vbo = std::make_shared<VBO>(vbo);
+
+    return *this;
+}
+
+VAO &VAO::setPremitive(const GL::Premitive &new_premitive)
 {
     _premitive = new_premitive;
 

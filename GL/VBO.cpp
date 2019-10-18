@@ -1,4 +1,6 @@
 #include <glad/glad.h>
+#include <algorithm>
+#include <iostream>
 
 #include "VBO.h"
 
@@ -21,15 +23,20 @@ VBO &VBO::setVertices(const std::vector<Vertex> &new_vertices)
 
 VBO &VBO::addAttribute(const Attribute &atr)
 {
+    auto it = std::find_if(_attributes.begin(), _attributes.end(), [&atr](Attribute &a)
+    {
+        return a.getID() == atr.getID();
+    });
+
+    if(it != _attributes.end())
+    {
+        std::cerr << "attribute with id: " << atr.getID() << " is already exists" << std::endl;
+    }
+
     _attributes.push_back(atr);
 
     return *this;
 
-}
-
-VBO::~VBO()
-{
-    glDeleteBuffers(1, &_id);
 }
 
 } //namespace GL
