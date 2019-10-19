@@ -25,14 +25,16 @@ public:
     uint16 getWidth() const {return _width;}
     uint16 getHeight() const {return _height;}
     string getTitle() const {return _title;}
-
+    Window &setTitle(const string &new_title) {_title = new_title; return *this;}
+    Window &setWidth(const uint16 &new_width) {_width = new_width; return *this;}
+    Window &setHeight(const uint16 &new_height) {_height = new_height; return *this;}
 
 private: //methods
 
     Window& init();
     Window& initGlad();
     Window &createWindow(const uint16 &width, const uint16 &height, const string &title);
-    static void onSizeChanged(GLFWwindow* window,  int32 width,  int32 height);
+    static void onSizeChanged(GLFWwindow* window, int32 width, int32 height);
 
 private: //members
 

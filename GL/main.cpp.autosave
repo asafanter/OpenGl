@@ -21,13 +21,6 @@ void processInput(GLFWwindow *window);
 
 int main()
 {
-
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-    {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
-    }
-
-
     GL::Vertex v1(-0.9f, -0.9f, 0.0f, GL::Color::GREEN);
     GL::Vertex v2(0.9f, -0.9f, 0.0f, GL::Color::RED);
     GL::Vertex v3(0.0f, 0.9f, 0.0f, GL::Color::BLUE);

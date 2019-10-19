@@ -2,10 +2,10 @@
 #define VAO_H
 
 #include <vector>
-#include <memory>
 
 #include "GL_types.h"
-#include "VBO.h"
+#include "Attribute.h"
+#include <Vertex.h>
 
 namespace GL {
 
@@ -14,17 +14,32 @@ class VAO
 public:
 
     VAO();
-    VAO &setVBO(const VBO &vbo);
     uint32 getID() const {return _id;}
-    VAO &setPremitive(const GL::Premitive &new_premitive);
+    VAO &setPremitive(const GL::Premitive &new_premitive) {_premitive = new_premitive; return *this;}
+    VAO &setVertices(const std::vector<Vertex> &new_vertices);
+    VAO &addAttribute(const Attribute &atr);
+    bool hasVertices() const {return _vertices.size() > 0;}
+    bool hasAttributes() const {return _attributes.size() > 0;}
+    void remove();
+    uint64 getNumOfVertices() const {return _vertices.size();}
     Premitive getPremitive() const {return _premitive;}
-    VBO getVBO() const {return *_vbo;}
-    bool hasVBO() const {return _vbo != nullptr;}
 
-private:
+private: //defs
+    struct VBO
+    {
+        uint32 id;
+    };
+
+private: //methods
+    const VAO &bind() const;
+    const VAO &unbind() const;
+
+private: //members
     uint32 _id;
     Premitive _premitive;
-    std::shared_ptr<VBO> _vbo;
+    VBO _vbo;
+    std::vector<Vertex> _vertices;
+    std::vector<Attribute> _attributes;
 };
 
 } //namespace GL

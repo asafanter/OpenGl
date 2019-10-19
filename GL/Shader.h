@@ -9,11 +9,13 @@ class Shader
 {
 public:
     Shader();
+    void remove();
     Shader &setSource(const string &file_name);
+    const Shader &compile() const;
     uint32 getID() const {return _id;}
     string getSource() const {return _src;}
     bool isSourceSet() const {return !_src.empty();}
-    ~Shader();
+    virtual ~Shader();
 
 protected:
     uint32 _id;

@@ -9,5 +9,5 @@ debug/FragmentShader.o
 debug/Program.o
 debug/VAO.o
 debug/Vertex.o
-debug/VBO.o
 debug/Attribute.o
+debug/Texture.o

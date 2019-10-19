@@ -15,8 +15,8 @@ SOURCES += \
     Program.cpp \
     VAO.cpp \
     Vertex.cpp \
-    VBO.cpp \
-    Attribute.cpp
+    Attribute.cpp \
+    Texture.cpp
 
 
 unix|win32: LIBS += -L$$PWD/bin/ -lglfw3dll
@@ -37,8 +37,8 @@ HEADERS += \
     Program.h \
     VAO.h \
     Vertex.h \
-    VBO.h \
-    Attribute.h
+    Attribute.h \
+    Texture.h
 
 DISTFILES += \
     Vertex.vsh \

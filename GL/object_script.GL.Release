@@ -9,5 +9,5 @@ release/FragmentShader.o
 release/Program.o
 release/VAO.o
 release/Vertex.o
-release/VBO.o
 release/Attribute.o
+release/Texture.o
