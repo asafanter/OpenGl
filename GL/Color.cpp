@@ -62,6 +62,13 @@ Color::Color(const Color::Dye &dye)
         _b = 1.0f;
         _a = 1.0f;
     }
+    else if(dye == Color::Dye::YELLOW)
+    {
+        _r = 1.0f;
+        _g = 1.0f;
+        _b = 0.0f;
+        _a = 1.0f;
+    }
 }
 
 Color &Color::setRed(const float &new_red)

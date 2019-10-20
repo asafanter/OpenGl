@@ -18,20 +18,50 @@ void processInput(GLFWwindow *window);
 
 int main()
 {
-    GL::Vertex v1(-0.9f, -0.9f, 0.0f, GL::Color::GREEN);
-    GL::Vertex v2(0.9f, -0.9f, 0.0f, GL::Color::RED);
-    GL::Vertex v3(0.0f, 0.9f, 0.0f, GL::Color::BLUE);
-    v1.setTextureCoords(0.0f, 0.0f);
-    v2.setTextureCoords(1.0f, 0.0f);
-    v3.setTextureCoords(0.0f, 1.0f);
 
-    GL::Vertex v4(0.5f, 0.5f, 0.0f, GL::Color::RED, 1.0f, 1.0f); //top right
-    GL::Vertex v5(0.5f, -0.5f, 0.0f, GL::Color::GREEN, 1.0f, 0.0f); // bottom right
-    GL::Vertex v6(-0.5f, -0.5f, 0.0f, GL::Color::BLUE, 0.0f, 0.0f); //bottom left
-    GL::Vertex v7(-0.5f, 0.5f, 0.0f, GL::Color::BLUE, 0.0f, 1.0f); // top left
+    //front side
+    GL::Vertex v1(0.5f, 0.5f, 0.5f, GL::Color::RED, 1.0f, 1.0f); //top right
+    GL::Vertex v2(0.5f, -0.5f, 0.5f, GL::Color::GREEN, 1.0f, 0.0f); // bottom right
+    GL::Vertex v3(-0.5f, -0.5f, 0.5f, GL::Color::BLUE, 0.0f, 0.0f); //bottom left
+    GL::Vertex v4(-0.5f, 0.5f, 0.5f, GL::Color::YELLOW, 0.0f, 1.0f); // top left
 
-    std::vector<GL::Vertex> vertices1 = {v1, v2, v3};
-    std::vector<GL::Vertex> vertices2 = {v4, v5, v6, v7};
+    //right side
+    GL::Vertex v5(0.5f, 0.5f, -0.5f, GL::Color::RED, 1.0f, 1.0f); //top right
+    GL::Vertex v6(0.5f, -0.5f, -0.5f, GL::Color::GREEN, 1.0f, 0.0f); // bottom right
+    GL::Vertex v7(0.5f, -0.5f, 0.5f, GL::Color::BLUE, 0.0f, 0.0f); //bottom left
+    GL::Vertex v8(0.5f, 0.5f, 0.5f, GL::Color::YELLOW, 0.0f, 1.0f); // top left
+
+    //left side
+    GL::Vertex v9(-0.5f, 0.5f, 0.5f, GL::Color::RED, 1.0f, 1.0f); //top right
+    GL::Vertex v10(-0.5f, -0.5f, 0.5f, GL::Color::GREEN, 1.0f, 0.0f); // bottom right
+    GL::Vertex v11(-0.5f, -0.5f, -0.5f, GL::Color::BLUE, 0.0f, 0.0f); //bottom left
+    GL::Vertex v12(-0.5f, 0.5f, -0.5f, GL::Color::YELLOW, 0.0f, 1.0f); // top left
+
+    //back side
+    GL::Vertex v13(-0.5f, 0.5f, -0.5f, GL::Color::RED, 1.0f, 1.0f); //top right
+    GL::Vertex v14(-0.5f, -0.5f, -0.5f, GL::Color::GREEN, 1.0f, 0.0f); // bottom right
+    GL::Vertex v15(0.5f, -0.5f, -0.5f, GL::Color::BLUE, 0.0f, 0.0f); //bottom left
+    GL::Vertex v16(0.5f, 0.5f, -0.5f, GL::Color::YELLOW, 0.0f, 1.0f); // top left
+
+    //top side
+    GL::Vertex v17(0.5f, 0.5f, -0.5f, GL::Color::RED, 1.0f, 1.0f); //top right
+    GL::Vertex v18(0.5f, 0.5f, 0.5f, GL::Color::GREEN, 1.0f, 0.0f); // bottom right
+    GL::Vertex v19(-0.5f, 0.5f, 0.5f, GL::Color::BLUE, 0.0f, 0.0f); //bottom left
+    GL::Vertex v20(-0.5f, 0.5f, -0.5f, GL::Color::YELLOW, 0.0f, 1.0f); // top left
+
+    //down side
+    GL::Vertex v21(0.5f, -0.5f, 0.5f, GL::Color::RED, 1.0f, 1.0f); //top right
+    GL::Vertex v22(0.5f, -0.5f, -0.5f, GL::Color::GREEN, 1.0f, 0.0f); // bottom right
+    GL::Vertex v23(-0.5f, -0.5f, -0.5f, GL::Color::BLUE, 0.0f, 0.0f); //bottom left
+    GL::Vertex v24(-0.5f, -0.5f, 0.5f, GL::Color::YELLOW, 0.0f, 1.0f); // top left
+
+
+    std::vector<GL::Vertex> vertices = {v1, v2, v3, v4,
+                                        v5, v6, v7, v8,
+                                        v9, v10, v11, v12,
+                                        v13, v14, v15, v16,
+                                        v17, v18, v19, v20,
+                                        v21, v22, v23, v24};
 
     GL::GL gl;
 
@@ -53,13 +83,18 @@ int main()
     program.link();
 
     GL::Texture texture;
-    texture.setImage("C:/Users/asafanter/Desktop/IMG_9953.JPG");
+    texture.setImage("C:/Users/asafanter/Desktop/narkis.jpg");
 
     GL::Mesh quad;
-    quad.translateZ(-5.0);
     quad.setTexture(texture);
-    quad.setVertices(vertices2);
-    quad.setIndices({0, 1, 3, 1, 2, 3});
+    quad.setVertices(vertices);
+    quad.setIndices({0, 1, 3, 3, 1, 2,
+                     4, 5, 7, 7, 5, 6,
+                     8, 9, 11, 11, 9, 10,
+                     12, 13, 15, 15, 13, 14,
+                     16, 17, 19, 19, 17, 18,
+                     20, 21, 23, 23, 21, 22
+                     });
     quad.setup();
 
 

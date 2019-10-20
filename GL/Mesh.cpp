@@ -11,46 +11,38 @@ Mesh::Mesh() :
     _vao(0),
     _vbo(0),
     _ebo(0),
-    _model(glm::mat4(1.0f))
+    _model(glm::mat4(1.0))
 {
 
 }
 
-Mesh &Mesh::rotate(const real32 &angle_deg, const RotationAxis &axis)
+Mesh &Mesh::rotate(const real64 &x_deg, const real64 &y_deg, const real64 &z_deg)
 {
-    if(axis == RotationAxis::X)
-    {
-        _model = glm::rotate(_model, angle_deg, glm::vec3(1.0f, 0.0f, 0.0f));
-    }
-    else if(axis == RotationAxis::Y)
-    {
-        _model = glm::rotate(_model, angle_deg, glm::vec3(0.0f, 1.0f, 0.0f));
-    }
-    else if(axis == RotationAxis::Z)
-    {
-        _model = glm::rotate(_model, angle_deg, glm::vec3(0.0f, 0.0f, 1.0f));
-    }
+
+    rotateX(x_deg);
+    rotateY(y_deg);
+    rotateZ(z_deg);
 
     return *this;
 }
 
-Mesh &Mesh::rotateX(const real32 &angle_deg)
+Mesh &Mesh::rotateX(const real64 &angle_deg)
 {
-    _model = glm::rotate(_model, angle_deg, glm::vec3(angle_deg, 0.0f, 0.0f));
+    _model = glm::rotate(_model, REAL32(angle_deg), glm::vec3(1.0, 0.0, 0.0));
 
     return *this;
 }
 
-Mesh &Mesh::rotateY(const real32 &angle_deg)
+Mesh &Mesh::rotateY(const real64 &angle_deg)
 {
-    _model = glm::rotate(_model, angle_deg, glm::vec3(0.0f, angle_deg, 0.0f));
+    _model = glm::rotate(_model, REAL32(angle_deg), glm::vec3(0.0, 1.0, 0.0));
 
     return *this;
 }
 
-Mesh &Mesh::rotateZ(const real32 &angle_deg)
+Mesh &Mesh::rotateZ(const real64 &angle_deg)
 {
-    _model = glm::rotate(_model, angle_deg, glm::vec3(0.0f, 0.0f, angle_deg));
+    _model = glm::rotate(_model, REAL32(angle_deg), glm::vec3(0.0, 0.0, 1.0));
 
     return *this;
 }

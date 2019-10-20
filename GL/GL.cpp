@@ -55,13 +55,13 @@ void GL::run(const Program &program)
         return;
     }
 
-
+        glEnable(GL_DEPTH_TEST);
 
     while(_window->isRunning())
     {
         Color color = _window->getBackgroundColor();
         glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         program.use();
 
@@ -70,6 +70,7 @@ void GL::run(const Program &program)
 
         for(auto &mesh : _meshes)
         {
+            mesh.rotate(0.005, 0.005, 0.0);
             mesh.draw();
         }
 

@@ -13,7 +13,8 @@ public:
         WHITE,
         RED,
         GREEN,
-        BLUE
+        BLUE,
+        YELLOW
     };
 
     Color();

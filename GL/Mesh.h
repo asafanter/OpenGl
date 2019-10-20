@@ -18,21 +18,14 @@ class Mesh
 {
 public:
 
-    enum class RotationAxis
-    {
-        X,
-        Y,
-        Z
-    };
-
     Mesh();
     Mesh &setVertices(const std::vector<Vertex> &vertices) {_vertices = vertices; return *this;}
     Mesh &setIndices(const std::vector<uint32> &indices) {_indices = indices; return *this;}
     Mesh &setTexture(const Texture &texture) {_texture = texture; return *this;}
-    Mesh &rotate(const real32 &angle_deg, const Mesh::RotationAxis &axis);
-    Mesh &rotateX(const real32 &angle_deg);
-    Mesh &rotateY(const real32 &angle_deg);
-    Mesh &rotateZ(const real32 &angle_deg);
+    Mesh &rotate(const real64 &x_deg, const real64 &y_deg, const real64 &z_deg);
+    Mesh &rotateX(const real64 &angle_deg);
+    Mesh &rotateY(const real64 &angle_deg);
+    Mesh &rotateZ(const real64 &angle_deg);
     Mesh &scale(const real64 &x_scale, const real64 &y_scale, const real64 &z_scale);
     Mesh &scaleX(const real64 &factor);
     Mesh &scaleY(const real64 &factor);
