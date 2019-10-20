@@ -80,7 +80,7 @@ Window &Window::createWindow(const uint16 &width, const uint16 &height, const st
     return *this;
 }
 
-void Window::onSizeChanged(GLFWwindow* window,  int32 width,  int32 height)
+void Window::onSizeChanged(GLFWwindow* window, int32 width, int32 height)
 {
     (void)window;
 

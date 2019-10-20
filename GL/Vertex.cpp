@@ -2,13 +2,13 @@
 
 namespace GL {
 
-Vertex::Vertex(const real32 &x, const real32 &y, const real32 &z, const Color &color) :
+Vertex::Vertex(const real32 &x, const real32 &y, const real32 &z, const Color &color, const real32 &x_texture, const real32 &y_texture) :
     _x(x),
     _y(y),
     _z(z),
     _color(color),
-    _x_texture(0.0),
-    _y_texture(0.0)
+    _x_texture(x_texture),
+    _y_texture(y_texture)
 {
 
 }

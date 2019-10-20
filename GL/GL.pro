@@ -13,10 +13,9 @@ SOURCES += \
     VertexShader.cpp \
     FragmentShader.cpp \
     Program.cpp \
-    VAO.cpp \
     Vertex.cpp \
-    Attribute.cpp \
-    Texture.cpp
+    Texture.cpp \
+    Mesh.cpp
 
 
 unix|win32: LIBS += -L$$PWD/bin/ -lglfw3dll
@@ -24,7 +23,9 @@ unix|win32: LIBS += -L$$PWD/bin/ -lglfw3dll
 INCLUDEPATH += $$PWD/bin
 DEPENDPATH += $$PWD/bin
 
-INCLUDEPATH += $$PWD/bin/include
+INCLUDEPATH += \
+    $$PWD/bin/include \
+    C:/Users/asafanter/Desktop/glm-0.9.2.7 \
 
 HEADERS += \
     Window.h \
@@ -35,10 +36,9 @@ HEADERS += \
     VertexShader.h \
     FragmentShader.h \
     Program.h \
-    VAO.h \
     Vertex.h \
-    Attribute.h \
-    Texture.h
+    Texture.h \
+    Mesh.h
 
 DISTFILES += \
     Vertex.vsh \

@@ -1,28 +1,34 @@
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 #include "GL.h"
-#include "Attribute.h"
 
 namespace GL {
 
 GL::GL() :
     _window(nullptr),
-    _vaos()
+    _meshes(),
+    _view(glm::mat4(1.0f)),
+    _projection(glm::mat4(1.0f))
 {
-
+    _view = glm::translate(_view, glm::vec3(0.0f, 0.0f, -3.0f));
 }
 
 GL &GL::attachWindow(Window &window)
 {
     _window = &window;
 
+    _projection = glm::perspective(45.0f, REAL32(_window->getWidth()) / REAL32(_window->getHeight()), 0.1f, 100.0f);
+
     return *this;
 }
 
-GL &GL::addVAO(const VAO &vao)
+GL &GL::addMesh(const Mesh &mesh)
 {
-    _vaos.emplace_back(vao);
+    _meshes.emplace_back(mesh);
 
     return *this;
 }
@@ -49,10 +55,7 @@ void GL::run(const Program &program)
         return;
     }
 
-    if(!hasVAO())
-    {
-        std::cerr << "thers is no VAO attached" << std::endl;
-    }
+
 
     while(_window->isRunning())
     {
@@ -62,9 +65,12 @@ void GL::run(const Program &program)
 
         program.use();
 
-        for(auto &vao : _vaos)
+        program.setMatrix4("view", _view);
+        program.setMatrix4("projection", _projection);
+
+        for(auto &mesh : _meshes)
         {
-            draw(vao);
+            mesh.draw();
         }
 
         _window->swapBuffers();
@@ -74,39 +80,18 @@ void GL::run(const Program &program)
 
 GL::~GL()
 {
-    for(auto &vao : _vaos)
+    for(auto &mesh : _meshes)
     {
-        vao.remove();
+        mesh.remove();
     }
 }
 
-GL &GL::draw(const VAO &vao)
+GL &GL::draw()
 {
-    glBindVertexArray(vao.getID());
 
-    if(!vao.hasVertices())
+    for(auto &mesh : _meshes)
     {
-        std::cerr << "VAO with id: " << vao.getID() << " has no vertices" << std::endl;
-        return *this;
-    }
-
-    if(!vao.hasAttributes())
-    {
-        std::cerr << "VAO with id: " << vao.getID() << " has no attributes" << std::endl;
-        return *this;
-    }
-
-    if(vao.getPremitive() == Premitive::POINTS)
-    {
-        drawPoints(vao.getNumOfVertices());
-    }
-    else if(vao.getPremitive() == Premitive::LINES)
-    {
-        drawLines(vao.getNumOfVertices());
-    }
-    else if(vao.getPremitive() == Premitive::TRIANGLES)
-    {
-        drawTriangles(vao.getNumOfVertices());
+        mesh.draw();
     }
 
     return *this;

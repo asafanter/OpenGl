@@ -7,7 +7,6 @@ debug/Shader.o
 debug/VertexShader.o
 debug/FragmentShader.o
 debug/Program.o
-debug/VAO.o
 debug/Vertex.o
-debug/Attribute.o
 debug/Texture.o
+debug/Mesh.o

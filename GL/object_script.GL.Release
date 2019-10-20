@@ -7,7 +7,6 @@ release/Shader.o
 release/VertexShader.o
 release/FragmentShader.o
 release/Program.o
-release/VAO.o
 release/Vertex.o
-release/Attribute.o
 release/Texture.o
+release/Mesh.o

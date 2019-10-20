@@ -48,6 +48,21 @@ Program &Program::link()
     return *this;
 }
 
+const Program &Program::setMatrix4(const string &name, const glm::core::type::mat4 &new_matrix) const
+{
+    int32 location  = glGetUniformLocation(_id, name.c_str());
+
+    if(location == -1)
+    {
+        std::cerr <<"failed to find location of matrix named: " << name << std::endl;
+        return *this;
+    }
+
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(new_matrix));
+
+    return *this;
+}
+
 const Program &Program::use() const
 {
     if(!_is_linked)

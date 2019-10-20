@@ -26,11 +26,13 @@ public:
     };
 
     Texture();
+    uint32 getID() const {return _id;}
     Wrapping getWrapping() const {return _wrapping;}
     Texture &setWrapping(const Texture::Wrapping &new_wrapping);
     Filtering getFiltering() const {return _filtering;}
     Texture &setFiltering(const Texture::Filtering &new_filtering);
     Texture &setImage(const string &image_file_name);
+    bool isEmpty() const {return _data == nullptr;}
 
 private: //methods
     const Texture &bind() const;
