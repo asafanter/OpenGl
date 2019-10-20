@@ -34,6 +34,27 @@ Mesh &Mesh::rotate(const real32 &angle_deg, const RotationAxis &axis)
     return *this;
 }
 
+Mesh &Mesh::rotateX(const real32 &angle_deg)
+{
+    _model = glm::rotate(_model, angle_deg, glm::vec3(angle_deg, 0.0f, 0.0f));
+
+    return *this;
+}
+
+Mesh &Mesh::rotateY(const real32 &angle_deg)
+{
+    _model = glm::rotate(_model, angle_deg, glm::vec3(0.0f, angle_deg, 0.0f));
+
+    return *this;
+}
+
+Mesh &Mesh::rotateZ(const real32 &angle_deg)
+{
+    _model = glm::rotate(_model, angle_deg, glm::vec3(0.0f, 0.0f, angle_deg));
+
+    return *this;
+}
+
 Mesh &Mesh::scale(const real64 &x_scale, const real64 &y_scale, const real64 &z_scale)
 {
     _model = glm::scale(_model, glm::vec3(x_scale, y_scale, z_scale));
@@ -58,6 +79,34 @@ Mesh &Mesh::scaleY(const real64 &factor)
 Mesh &Mesh::scaleZ(const real64 &factor)
 {
     _model = glm::scale(_model, glm::vec3(1.0, 1.0, factor));
+
+    return *this;
+}
+
+Mesh &Mesh::translate(const real64 &x_offset, const real64 &y_offset, const real64 &z_offset)
+{
+    _model = glm::translate(_model, glm::vec3(x_offset, y_offset, z_offset));
+
+    return *this;
+}
+
+Mesh &Mesh::translateX(const real64 &offset)
+{
+    _model = glm::translate(_model, glm::vec3(offset, 0.0, 0.0));
+
+    return *this;
+}
+
+Mesh &Mesh::translateY(const real64 &offset)
+{
+    _model = glm::translate(_model, glm::vec3(0.0, offset, 0.0));
+
+    return *this;
+}
+
+Mesh &Mesh::translateZ(const real64 &offset)
+{
+    _model = glm::translate(_model, glm::vec3(0.0, 0.0, offset));
 
     return *this;
 }

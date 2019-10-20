@@ -53,13 +53,15 @@ int main()
     program.link();
 
     GL::Texture texture;
-    texture.setImage("C:/Users/asafanter/Desktop/wall.jpg");
+    texture.setImage("C:/Users/asafanter/Desktop/IMG_9953.JPG");
 
     GL::Mesh quad;
+    quad.translateZ(-5.0);
     quad.setTexture(texture);
     quad.setVertices(vertices2);
     quad.setIndices({0, 1, 3, 1, 2, 3});
     quad.setup();
+
 
 //    GL::Mesh tri;
 //    tri.setTexture(texture);
