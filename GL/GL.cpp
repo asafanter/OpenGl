@@ -11,10 +11,13 @@ namespace GL {
 GL::GL() :
     _window(nullptr),
     _meshes(),
-    _view(glm::mat4(1.0f)),
-    _projection(glm::mat4(1.0f))
+    _view(glm::mat4(1.0)),
+    _projection(glm::mat4(1.0f)),
+    _camera({})
 {
-    _view = glm::translate(_view, glm::vec3(0.0f, 0.0f, -3.0f));
+    _camera.pos = glm::vec3(1.0, 0.0, 3.0);
+    _camera.front = glm::vec3(0.0, 0.0, -1.0);
+    _camera.up = glm::vec3(0.0, 1.0, 0.0);
 }
 
 GL &GL::attachWindow(Window &window)
@@ -22,6 +25,12 @@ GL &GL::attachWindow(Window &window)
     _window = &window;
 
     _projection = glm::perspective(45.0f, REAL32(_window->getWidth()) / REAL32(_window->getHeight()), 0.1f, 100.0f);
+
+    _window->setOnSizeChangedHandler([this](uint32 width, uint32 height)
+    {
+        _projection = glm::perspective(45.0f, REAL32(width) / REAL32(height), 0.1f, 100.0f);
+        glViewport(0, 0, INT32(width), INT32(height));
+    });
 
     return *this;
 }
@@ -51,27 +60,28 @@ void GL::run(const Program &program)
 {
     if(_window == nullptr)
     {
-        std::cout << "there is no window attached" << std::endl;
+        std::cerr << "there is no window attached" << std::endl;
+        return;
+    }
+    if(_meshes.empty())
+    {
+        std::cerr << "there is no meshes to draw" << std::endl;
         return;
     }
 
-        glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
     while(_window->isRunning())
     {
-        Color color = _window->getBackgroundColor();
-        glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        _window->ProcessInput();
+        clearBackgroundColor();
         program.use();
 
-        program.setMatrix4("view", _view);
-        program.setMatrix4("projection", _projection);
+        updateMatrices(program);
 
         for(auto &mesh : _meshes)
         {
-            mesh.rotate(0.005, 0.005, 0.0);
-            mesh.draw();
+            mesh.draw(program);
         }
 
         _window->swapBuffers();
@@ -85,17 +95,6 @@ GL::~GL()
     {
         mesh.remove();
     }
-}
-
-GL &GL::draw()
-{
-
-    for(auto &mesh : _meshes)
-    {
-        mesh.draw();
-    }
-
-    return *this;
 }
 
 GL &GL::drawPoints(const uint64 &num_of_vertices)
@@ -127,6 +126,24 @@ GL &GL::drawTriangles(const uint64 &num_of_vertices)
     }
 
     glDrawArrays(GL_TRIANGLES, 0, INT32(num_of_vertices));
+
+    return *this;
+}
+
+GL &GL::clearBackgroundColor()
+{
+    Color color = _window->getBackgroundColor();
+    glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    return *this;
+}
+
+GL &GL::updateMatrices(const Program &program)
+{
+    _view = glm::lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
+    program.setMatrix4("view", _view);
+    program.setMatrix4("projection", _projection);
 
     return *this;
 }

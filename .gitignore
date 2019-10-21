@@ -2,3 +2,7 @@
 *.exe
 
 *.o
+
+*.Debug
+
+*.Release

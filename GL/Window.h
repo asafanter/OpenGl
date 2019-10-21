@@ -3,6 +3,7 @@
 
 #include <glfw3.h>
 #include <string>
+#include <functional>
 
 #include "GL_types.h"
 #include "Color.h"
@@ -20,6 +21,8 @@ public:
     Window &swapBuffers();
     Window &pollEvents();
     Window &setBackgroundColor(const real32& r, const real32& g, const real32& b, const real32& a);
+    Window &setOnSizeChangedHandler(std::function<void(uint32, uint32)> handler);
+    Window &ProcessInput();
     Window &setBackgroundColor(const Color &color) {_background_color = color; return *this;}
     Color getBackgroundColor() const {return _background_color;}
     uint16 getWidth() const {return _width;}
@@ -31,8 +34,8 @@ public:
 
 private: //methods
 
-    Window& init();
-    Window& initGlad();
+    Window &init();
+    Window &initGlad();
     Window &createWindow(const uint16 &width, const uint16 &height, const string &title);
     static void onSizeChanged(GLFWwindow* window, int32 width, int32 height);
 
@@ -43,7 +46,10 @@ private: //members
     uint16 _width;
     uint16 _height;
     string _title;
+    static std::function<void(uint32, uint32)> _handler_size_changed;
 };
-}
+
+
+} //namespace GL
 
 #endif // WINDOW_H

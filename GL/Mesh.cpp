@@ -11,7 +11,8 @@ Mesh::Mesh() :
     _vao(0),
     _vbo(0),
     _ebo(0),
-    _model(glm::mat4(1.0))
+    _model(glm::mat4(1.0)),
+    _is_setup(false)
 {
 
 }
@@ -103,6 +104,14 @@ Mesh &Mesh::translateZ(const real64 &offset)
     return *this;
 }
 
+Mesh &Mesh::setPosition(const real64 &x, const real64 &y, const real64 &z)
+{
+    _model = glm::mat4(1.0);
+    _model = glm::translate(_model, glm::vec3(x, y, z));
+
+    return *this;
+}
+
 GL::Mesh &GL::Mesh::setup()
 {
     glGenVertexArrays(1, &_vao);
@@ -130,8 +139,9 @@ GL::Mesh &GL::Mesh::setup()
         glEnableVertexAttribArray(2);
     }
 
-
     glBindVertexArray(0);
+
+    _is_setup = true;
 
     return *this;
 }
@@ -143,25 +153,53 @@ void Mesh::remove()
     glDeleteBuffers(1, &_ebo);
 }
 
-//TODO bring program as parameter
-Mesh &Mesh::draw()
+Mesh &Mesh::draw(const Program &program)
 {
+    if(!isSetupForDrawing())
+    {
+        return *this;
+    }
+
+    glBindVertexArray(_vao);
+
+    trySetTexture();
+
+    program.setMatrix4("model", _model);
+
+    glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return *this;
+}
+
+bool Mesh::isSetupForDrawing() const
+{
+    if(!_is_setup)
+    {
+        std::cerr << "Mesh must be setup before drawing" << std::endl;
+        return false;
+    }
 
     if(_vertices.empty())
     {
         std::cerr << "vertices have not set" << std::endl;
-        return *this;
+        return false;
     }
 
     if(_vertices.empty())
     {
         std::cerr << "indices have not set" << std::endl;
-        return *this;
+        return false;
     }
 
-    glBindTexture(GL_TEXTURE_2D, _texture.getID());
+    return true;
+}
 
-    glBindVertexArray(_vao);
+Mesh &Mesh::trySetTexture()
+{
+    glBindTexture(GL_TEXTURE_2D, _texture.getID());
 
     if(!_texture.isEmpty())
     {
@@ -173,14 +211,6 @@ Mesh &Mesh::draw()
         auto loc = glGetUniformLocation(1, "is_texture_set");
         glUniform1i(loc, 0);
     }
-
-    unsigned int modelLoc = glGetUniformLocation(1, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(_model));
-
-    glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
-
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
     return *this;
 }

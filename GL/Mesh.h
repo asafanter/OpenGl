@@ -11,6 +11,7 @@
 #include "GL_types.h"
 #include "Vertex.h"
 #include "Texture.h"
+#include "Program.h"
 
 namespace GL {
 
@@ -34,9 +35,14 @@ public:
     Mesh &translateX(const real64 &offset);
     Mesh &translateY(const real64 &offset);
     Mesh &translateZ(const real64 &offset);
+    Mesh &setPosition(const real64 &x, const real64 &y, const real64 &z);
     Mesh &setup();
     void remove();
-    Mesh &draw();
+    Mesh &draw(const Program &program);
+
+private: //methods
+    bool isSetupForDrawing() const;
+    Mesh &trySetTexture();
 
 private: //members
     std::vector<Vertex> _vertices;
@@ -46,6 +52,7 @@ private: //members
     uint32 _vbo;
     uint32 _ebo;
     glm::mat4 _model;
+    bool _is_setup;
 };
 
 } //namespace GL

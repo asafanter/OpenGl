@@ -7,6 +7,8 @@
 
 namespace GL {
 
+std::function<void(uint32, uint32)> Window::_handler_size_changed = std::function<void(uint32, uint32)>();
+
 Window::Window(const uint16 &width, const uint16 &height, const string &title) :
     _window(nullptr),
     _background_color(),
@@ -38,6 +40,31 @@ Window &Window::setBackgroundColor(const real32 &r, const real32 &g, const real3
     _background_color.setGreen(g);
     _background_color.setBlue(b);
     _background_color.setAlpha(a);
+
+    return *this;
+}
+
+Window &Window::setOnSizeChangedHandler(std::function<void(uint32, uint32)> handler)
+{
+    _handler_size_changed = handler;
+
+    return *this;
+}
+
+Window &Window::ProcessInput()
+{
+    if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(_window, true);
+
+//    float cameraSpeed = 2.5 * deltaTime;
+//    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+//        cameraPos += cameraSpeed * cameraFront;
+//    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+//        cameraPos -= cameraSpeed * cameraFront;
+//    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+//        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+//    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+//        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
     return *this;
 }
@@ -84,7 +111,7 @@ void Window::onSizeChanged(GLFWwindow* window, int32 width, int32 height)
 {
     (void)window;
 
-    glViewport(0, 0, width, height);
+    _handler_size_changed(UINT32(width), UINT32(height));
 }
 
 Window& Window::init()
