@@ -8,13 +8,15 @@
 namespace GL {
 
 std::function<void(uint32, uint32)> Window::_handler_size_changed = std::function<void(uint32, uint32)>();
+std::function<void(int32, int32)> Window::_handler_key_pressed = std::function<void(int32, int32)>();
 
 Window::Window(const uint16 &width, const uint16 &height, const string &title) :
     _window(nullptr),
     _background_color(),
     _width(width),
     _height(height),
-    _title(title)
+    _title(title),
+    _is_open(false)
 {
     init().createWindow(width, height, title).initGlad();
 }
@@ -51,27 +53,19 @@ Window &Window::setOnSizeChangedHandler(std::function<void(uint32, uint32)> hand
     return *this;
 }
 
-Window &Window::ProcessInput()
+Window &Window::setOnKeyPressedHandler(std::function<void(int32, int32)> handler)
 {
-    if (glfwGetKey(_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(_window, true);
-
-//    float cameraSpeed = 2.5 * deltaTime;
-//    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-//        cameraPos += cameraSpeed * cameraFront;
-//    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-//        cameraPos -= cameraSpeed * cameraFront;
-//    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-//        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-//    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-//        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    _handler_key_pressed = handler;
 
     return *this;
 }
 
-bool Window::isRunning() const
+Window Window::close()
 {
-    return !glfwWindowShouldClose(_window);
+    glfwSetWindowShouldClose(_window, true);
+    _is_open = false;
+
+    return *this;
 }
 
 Window &Window::swapBuffers()
@@ -103,6 +97,9 @@ Window &Window::createWindow(const uint16 &width, const uint16 &height, const st
 
     glfwMakeContextCurrent(_window);
     glfwSetFramebufferSizeCallback(_window, &onSizeChanged);
+    glfwSetKeyCallback(_window, &onKeyPressed);
+
+    _is_open = true;
 
     return *this;
 }
@@ -112,6 +109,15 @@ void Window::onSizeChanged(GLFWwindow* window, int32 width, int32 height)
     (void)window;
 
     _handler_size_changed(UINT32(width), UINT32(height));
+}
+
+void Window::onKeyPressed(GLFWwindow *window, int key, int scan_code, int action, int mods)
+{
+    (void)window;
+    (void)scan_code;
+    (void)mods;
+
+    _handler_key_pressed(key, action);
 }
 
 Window& Window::init()

@@ -38,6 +38,7 @@ private: //methods
     GL &drawTriangles(const uint64 &num_of_vertices);
     GL &clearBackgroundColor();
     GL &updateMatrices(const Program &program);
+    bool isReadyForDrawing();
 
 private: //members
     Window* _window;
@@ -45,6 +46,7 @@ private: //members
     glm::mat4 _view;
     glm::mat4 _projection;
     Camera _camera;
+    std::vector<bool> _keys;
 };
 
 } //namespace GL
