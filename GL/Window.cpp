@@ -7,6 +7,7 @@
 
 namespace GL {
 
+std::function<void(real64, real64)> Window::_on_mouse_moved = std::function<void(real64, real64)>();
 std::function<void(uint32, uint32)> Window::_handler_size_changed = std::function<void(uint32, uint32)>();
 std::function<void(int32, int32)> Window::_handler_key_pressed = std::function<void(int32, int32)>();
 
@@ -60,6 +61,13 @@ Window &Window::setOnKeyPressedHandler(std::function<void(int32, int32)> handler
     return *this;
 }
 
+Window &Window::setOnMouseMovedHandler(std::function<void (real64, real64)> handler)
+{
+    _on_mouse_moved = handler;
+
+    return *this;
+}
+
 Window Window::close()
 {
     glfwSetWindowShouldClose(_window, true);
@@ -87,6 +95,7 @@ Window &Window::createWindow(const uint16 &width, const uint16 &height, const st
     _window = glfwCreateWindow(static_cast<int>(width), static_cast<int>(height),
                                title.c_str(), nullptr, nullptr);
 
+
     if (!_window)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -98,6 +107,8 @@ Window &Window::createWindow(const uint16 &width, const uint16 &height, const st
     glfwMakeContextCurrent(_window);
     glfwSetFramebufferSizeCallback(_window, &onSizeChanged);
     glfwSetKeyCallback(_window, &onKeyPressed);
+    glfwSetCursorPosCallback(_window, &onMouseMoved);
+//    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     _is_open = true;
 
@@ -111,13 +122,20 @@ void Window::onSizeChanged(GLFWwindow* window, int32 width, int32 height)
     _handler_size_changed(UINT32(width), UINT32(height));
 }
 
-void Window::onKeyPressed(GLFWwindow *window, int key, int scan_code, int action, int mods)
+void Window::onKeyPressed(GLFWwindow *window, int32 key, int32 scan_code, int32 action, int32 mods)
 {
     (void)window;
     (void)scan_code;
     (void)mods;
 
     _handler_key_pressed(key, action);
+}
+
+void Window::onMouseMoved(GLFWwindow *window, real64 x, real64 y)
+{
+    (void)window;
+
+    _on_mouse_moved(x, y);
 }
 
 Window& Window::init()

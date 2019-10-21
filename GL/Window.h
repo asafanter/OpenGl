@@ -16,12 +16,14 @@ public:
 
     Window(const uint16& width = 800, const uint16& height = 600, const string& title = "window");
     Window(const uint16 &width, const uint16 &height, const string &title, const GL::Color &background_color);
+    Window(const Window &window) = default;
     ~Window();
     Window &swapBuffers();
     Window &pollEvents();
     Window &setBackgroundColor(const real32& r, const real32& g, const real32& b, const real32& a);
     Window &setOnSizeChangedHandler(std::function<void(uint32, uint32)> handler);
     Window &setOnKeyPressedHandler(std::function<void(int32, int32)> handler);
+    Window &setOnMouseMovedHandler(std::function<void(real64, real64)> handler);
     Window close();
     Window &setBackgroundColor(const Color &color) {_background_color = color; return *this;}
     Color getBackgroundColor() const {return _background_color;}
@@ -39,7 +41,8 @@ private: //methods
     Window &initGlad();
     Window &createWindow(const uint16 &width, const uint16 &height, const string &title);
     static void onSizeChanged(GLFWwindow* window, int32 width, int32 height);
-    static void onKeyPressed(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void onKeyPressed(GLFWwindow* window, int32 key, int32 scancode, int32 action, int32 mods);
+    static void onMouseMoved(GLFWwindow* window, real64 x, real64 y);
 
 private: //members
 
@@ -51,6 +54,7 @@ private: //members
     bool _is_open;
     static std::function<void(uint32, uint32)> _handler_size_changed;
     static std::function<void(int, int)> _handler_key_pressed;
+    static std::function<void(real64, real64)> _on_mouse_moved;
 };
 
 

@@ -25,11 +25,29 @@ public:
     ~GL();
 
 private: //defs
+
+    const real32 MOVEMENT_SPEED = 0.005f;
+    const uint32 NUM_OF_KEYS = 128;
+
     struct Camera
     {
         glm::vec3 pos;
         glm::vec3 front;
         glm::vec3 up;
+        real64 yaw;
+        real64 pitch;
+        real64 roll;
+        const real64 MAX_PITCH_ANGLE_DEG = 89.0;
+    };
+
+    struct Mouse
+    {
+        bool is_first_clicked;
+        real64 curr_x;
+        real64 curr_y;
+        real64 last_x;
+        real64 last_y;
+        const real64 sensitivity = 0.08;
     };
 
 private: //methods
@@ -39,6 +57,15 @@ private: //methods
     GL &clearBackgroundColor();
     GL &updateMatrices(const Program &program);
     bool isReadyForDrawing();
+    GL &setWindowHandlers();
+    GL &setWindowsSizeChangedHandler();
+    GL &setKeyPressedHandler();
+    GL &setMouseMovedHandler();
+    GL &init();
+    GL &initCamera();
+    GL &initKeys();
+    GL &handleInput();
+    real64 limitAngle(const real64 &angle_deg, const real64 &min, const real64 &max);
 
 private: //members
     Window* _window;
@@ -47,6 +74,7 @@ private: //members
     glm::mat4 _projection;
     Camera _camera;
     std::vector<bool> _keys;
+    Mouse _mouse;
 };
 
 } //namespace GL
