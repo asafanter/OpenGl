@@ -23,9 +23,6 @@ GL::GL() :
 GL &GL::attachWindow(Window &window)
 {
     _window = &window;
-
-    _projection = glm::perspective(45.0f, REAL32(_window->getWidth()) / REAL32(_window->getHeight()), 0.1f, 100.0f);
-
     setWindowHandlers();
 
     return *this;
@@ -137,6 +134,13 @@ GL &GL::updateMatrices(const Program &program)
     program.setMatrix4("view", _view);
     program.setMatrix4("projection", _projection);
 
+    if(_camera.is_fov_changed)
+    {
+        _projection = glm::perspective(REAL32(_camera.fov),
+                                       REAL32(_window->getWidth()) / REAL32(_window->getHeight()), 0.1f, 100.0f);
+        _camera.is_fov_changed = false;
+    }
+
     return *this;
 }
 
@@ -161,6 +165,8 @@ GL &GL::setWindowHandlers()
     setWindowsSizeChangedHandler();
     setKeyPressedHandler();
     setMouseMovedHandler();
+    setMouseClickedHandler();
+    setMouseScrollHandler();
 
     return *this;
 }
@@ -169,7 +175,7 @@ GL &GL::setWindowsSizeChangedHandler()
 {
     _window->setOnSizeChangedHandler([this](uint32 width, uint32 height)
     {
-        _projection = glm::perspective(45.0f, REAL32(width) / REAL32(height), 0.1f, 100.0f);
+        _camera.is_fov_changed = true;
         glViewport(0, 0, INT32(width), INT32(height));
     });
 
@@ -205,33 +211,88 @@ GL &GL::setMouseMovedHandler()
 {
     _window->setOnMouseMovedHandler([this](real64 x, real64 y)
     {
-        std::cout << "(" << x << ", " << y << ")" << std::endl;
-        _mouse.curr_x = x;
-        _mouse.curr_y = y;
+        if(!_mouse.is_left_button_pressed)
+        {
+            return;
+        }
 
-        if(!_mouse.is_first_clicked)
+        if(_mouse.is_new_movement)
         {
             _mouse.last_x = x;
             _mouse.last_y = y;
-            _mouse.is_first_clicked = true;
+            _mouse.is_new_movement = false;
         }
 
-        auto x_offset = x - _mouse.last_x;
-        auto y_offset = y - _mouse.last_y;
+        auto x_offset = _mouse.last_x - x;
+        auto y_offset = _mouse.last_y - y;
         _mouse.last_x = x;
         _mouse.last_y = y;
 
         x_offset *= _mouse.sensitivity;
         y_offset *= -_mouse.sensitivity;
 
-        _camera.yaw += x_offset;
-        _camera.pitch += limitAngle(y_offset, -_camera.MAX_PITCH_ANGLE_DEG, _camera.MAX_PITCH_ANGLE_DEG);
+        glm::vec3 offset(x_offset, y_offset, 0.0f);
 
-        glm::dvec3 tmp_front;
-        tmp_front.x = cos(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-        tmp_front.y = sin(glm::radians(_camera.pitch));
-        tmp_front.z = sin(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-        _camera.front = glm::normalize(tmp_front);
+        _camera.pos += offset;
+
+//        _camera.yaw += x_offset;
+//        _camera.pitch += limitAngle(y_offset, -_camera.MAX_PITCH_ANGLE_DEG, _camera.MAX_PITCH_ANGLE_DEG);
+
+//        glm::dvec3 tmp_front;
+//        tmp_front.x = cos(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
+//        tmp_front.y = sin(glm::radians(_camera.pitch));
+//        tmp_front.z = sin(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
+//        _camera.front = glm::normalize(tmp_front);
+    });
+
+    return *this;
+}
+
+GL &GL::setMouseClickedHandler()
+{
+    _window->setOnMouseClickedHandler([this](int32 button, int32 action)
+    {
+        if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        {
+            _mouse.is_new_movement = true;
+            _mouse.is_left_button_pressed = true;
+        }
+        if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+        {
+            _mouse.is_left_button_pressed = false;
+        }
+        if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+        {
+            _mouse.is_right_button_pressed = true;
+        }
+        if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+        {
+            _mouse.is_right_button_pressed = false;
+        }
+    });
+
+    return *this;
+}
+
+GL &GL::setMouseScrollHandler()
+{
+    _window->setOnMouseScrolldHandler([this](real64 offset)
+    {
+        if(_camera.fov >= 1.0 && _camera.fov <= 80.0)
+        {
+            _camera.fov -= offset;
+            _camera.is_fov_changed = true;
+        }
+
+        if(_camera.fov <= 1.0)
+        {
+            _camera.fov = 1.0;
+        }
+
+        if(_camera.fov >= 80.0)
+        {
+            _camera.fov = 80.0;
+        }
     });
 
     return *this;
@@ -250,9 +311,12 @@ GL &GL::initCamera()
     _camera.pos = glm::vec3(0.0, 0.0, 3.0);
     _camera.front = glm::vec3(0.0, 0.0, -1.0);
     _camera.up = glm::vec3(0.0, 1.0, 0.0);
+    _camera.right = glm::cross(_camera.front, _camera.up);
     _camera.yaw = -90.0;
     _camera.pitch = 0.0;
     _camera.roll = 0.0;
+    _camera.fov = 45.0;
+    _camera.is_fov_changed = true;
 
     return *this;
 }

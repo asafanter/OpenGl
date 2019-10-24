@@ -34,20 +34,23 @@ private: //defs
         glm::vec3 pos;
         glm::vec3 front;
         glm::vec3 up;
+        glm::vec3 right;
         real64 yaw;
         real64 pitch;
         real64 roll;
+        real64 fov;
+        bool is_fov_changed;
         const real64 MAX_PITCH_ANGLE_DEG = 89.0;
     };
 
     struct Mouse
     {
-        bool is_first_clicked;
-        real64 curr_x;
-        real64 curr_y;
+        bool is_new_movement;
+        bool is_left_button_pressed;
+        bool is_right_button_pressed;
         real64 last_x;
         real64 last_y;
-        const real64 sensitivity = 0.08;
+        const real64 sensitivity = 0.01;
     };
 
 private: //methods
@@ -61,6 +64,8 @@ private: //methods
     GL &setWindowsSizeChangedHandler();
     GL &setKeyPressedHandler();
     GL &setMouseMovedHandler();
+    GL &setMouseClickedHandler();
+    GL &setMouseScrollHandler();
     GL &init();
     GL &initCamera();
     GL &initKeys();

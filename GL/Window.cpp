@@ -10,12 +10,12 @@ namespace GL {
 std::function<void(real64, real64)> Window::_on_mouse_moved = nullptr;
 std::function<void(uint32, uint32)> Window::_handler_size_changed = nullptr;
 std::function<void(int32, int32)> Window::_handler_key_pressed = nullptr;
+std::function<void(int32, int32)> Window::_on_mouse_clicked = nullptr;
+std::function<void(real64)> Window::_on_mouse_scroll = nullptr;
 
 Window::Window(const uint16 &width, const uint16 &height, const string &title) :
     _window(nullptr),
     _background_color(),
-    _width(width),
-    _height(height),
     _title(title),
     _is_open(false)
 {
@@ -25,8 +25,6 @@ Window::Window(const uint16 &width, const uint16 &height, const string &title) :
 Window::Window(const uint16 &width, const uint16 &height, const string &title, const Color &background_color) :
     _window(nullptr),
     _background_color(background_color),
-    _width(width),
-    _height(height),
     _title(title)
 {
     init().createWindow(width, height, title).initGlad();
@@ -68,6 +66,20 @@ Window &Window::setOnMouseMovedHandler(std::function<void (real64, real64)> hand
     return *this;
 }
 
+Window &Window::setOnMouseClickedHandler(std::function<void (int32, int32)> handler)
+{
+    _on_mouse_clicked = handler;
+
+    return *this;
+}
+
+Window &Window::setOnMouseScrolldHandler(std::function<void (real64)> handler)
+{
+    _on_mouse_scroll = handler;
+
+    return *this;
+}
+
 Window Window::close()
 {
     glfwSetWindowShouldClose(_window, true);
@@ -79,6 +91,44 @@ Window Window::close()
 const Window &Window::maximize() const
 {
     glfwMaximizeWindow(_window);
+
+    return *this;
+}
+
+uint16 Window::getWidth() const
+{
+    int32 width = 0;
+    int32 height = 0;
+    glfwGetWindowSize(_window, &width, &height);
+
+    return UINT16(width);
+}
+
+uint16 Window::getHeight() const
+{
+    int32 width = 0;
+    int32 height = 0;
+    glfwGetWindowSize(_window, &width, &height);
+
+    return UINT16(height);
+}
+
+Window &Window::setWidth(const uint16 &new_width)
+{
+    int32 width = 0;
+    int32 height = 0;
+    glfwGetWindowSize(_window, &width, &height);
+    glfwSetWindowSize(_window, new_width, height);
+
+    return *this;
+}
+
+Window &Window::setHeight(const uint16 &new_height)
+{
+    int32 width = 0;
+    int32 height = 0;
+    glfwGetWindowSize(_window, &width, &height);
+    glfwSetWindowSize(_window, width, new_height);
 
     return *this;
 }
@@ -115,6 +165,8 @@ Window &Window::createWindow(const uint16 &width, const uint16 &height, const st
     glfwSetFramebufferSizeCallback(_window, &onSizeChanged);
     glfwSetKeyCallback(_window, &onKeyPressed);
     glfwSetCursorPosCallback(_window, &onMouseMoved);
+    glfwSetMouseButtonCallback(_window, &onMouseClicked);
+    glfwSetScrollCallback(_window, &onMouseScroll);
 //    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     _is_open = true;
@@ -125,8 +177,6 @@ Window &Window::createWindow(const uint16 &width, const uint16 &height, const st
 void Window::onSizeChanged(GLFWwindow* window, int32 width, int32 height)
 {
     (void)window;
-
-    glViewport(0, 0, INT32(width), INT32(height));
 
     if(_handler_size_changed)
     {
@@ -153,6 +203,28 @@ void Window::onMouseMoved(GLFWwindow *window, real64 x, real64 y)
     if(_on_mouse_moved)
     {
         _on_mouse_moved(x, y);
+    }
+}
+
+void Window::onMouseClicked(GLFWwindow *window, int32 button, int32 action, int32 mods)
+{
+    (void)window;
+    (void)mods;
+
+    if(_on_mouse_clicked)
+    {
+        _on_mouse_clicked(button, action);
+    }
+}
+
+void Window::onMouseScroll(GLFWwindow *window, real64 x_offset, real64 y_offset)
+{
+    (void)window;
+    (void)x_offset;
+
+    if(_on_mouse_scroll)
+    {
+        _on_mouse_scroll(y_offset);
     }
 }
 
