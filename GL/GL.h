@@ -71,6 +71,9 @@ private: //methods
     GL &initKeys();
     GL &handleInput();
     real64 limitAngle(const real64 &angle_deg, const real64 &min, const real64 &max);
+    GL &updateView();
+    GL &updateProjection();
+    GL &setMatricesToProgram(const Program &program);
 
 private: //members
     Window* _window;

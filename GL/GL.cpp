@@ -130,16 +130,9 @@ GL &GL::clearBackgroundColor()
 
 GL &GL::updateMatrices(const Program &program)
 {
-    _view = glm::lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
-    program.setMatrix4("view", _view);
-    program.setMatrix4("projection", _projection);
-
-    if(_camera.is_fov_changed)
-    {
-        _projection = glm::perspective(REAL32(_camera.fov),
-                                       REAL32(_window->getWidth()) / REAL32(_window->getHeight()), 0.1f, 100.0f);
-        _camera.is_fov_changed = false;
-    }
+    updateView();
+    updateProjection();
+    setMatricesToProgram(program);
 
     return *this;
 }
@@ -231,18 +224,39 @@ GL &GL::setMouseMovedHandler()
         x_offset *= _mouse.sensitivity;
         y_offset *= -_mouse.sensitivity;
 
-        glm::vec3 offset(x_offset, y_offset, 0.0f);
 
-        _camera.pos += offset;
 
-//        _camera.yaw += x_offset;
-//        _camera.pitch += limitAngle(y_offset, -_camera.MAX_PITCH_ANGLE_DEG, _camera.MAX_PITCH_ANGLE_DEG);
+        if(_keys[GLFW_KEY_X])
+        {
+            _camera.pitch += limitAngle(y_offset * 5, -_camera.MAX_PITCH_ANGLE_DEG, _camera.MAX_PITCH_ANGLE_DEG);
 
-//        glm::dvec3 tmp_front;
-//        tmp_front.x = cos(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-//        tmp_front.y = sin(glm::radians(_camera.pitch));
-//        tmp_front.z = sin(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-//        _camera.front = glm::normalize(tmp_front);
+            glm::dvec3 tmp_front;
+            tmp_front.x = cos(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
+            tmp_front.y = sin(glm::radians(_camera.pitch));
+            tmp_front.z = sin(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
+            _camera.front = glm::normalize(tmp_front);
+        }
+        else if(_keys[GLFW_KEY_Y])
+        {
+            _camera.yaw += x_offset * 5;
+
+            glm::dvec3 tmp_front;
+            tmp_front.x = cos(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
+            tmp_front.y = sin(glm::radians(_camera.pitch));
+            tmp_front.z = sin(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
+            _camera.front = glm::normalize(tmp_front);
+        }
+        else
+        {
+            glm::vec3 offset(x_offset, y_offset, 0.0f);
+
+            _camera.pos += offset;
+        }
+
+
+
+
+
     });
 
     return *this;
@@ -368,6 +382,33 @@ real64 GL::limitAngle(const real64 &angle_deg, const real64 &min, const real64 &
     }
 
     return res;
+}
+
+GL &GL::updateView()
+{
+    _view = glm::lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
+
+    return *this;
+}
+
+GL &GL::updateProjection()
+{
+    if(_camera.is_fov_changed)
+    {
+        _projection = glm::perspective(REAL32(_camera.fov),
+                                       REAL32(_window->getWidth()) / REAL32(_window->getHeight()), 0.1f, 100.0f);
+        _camera.is_fov_changed = false;
+    }
+
+    return *this;
+}
+
+GL &GL::setMatricesToProgram(const Program &program)
+{
+    program.setMatrix4("view", _view);
+    program.setMatrix4("projection", _projection);
+
+    return *this;
 }
 
 } //namespace GL
