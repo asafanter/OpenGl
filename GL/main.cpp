@@ -66,6 +66,7 @@ int main()
     GL::GL gl;
 
     GL::Window window(800, 600, "asaf anter", GL::Color::BLACK);
+    window.maximize();
 
     gl.attachWindow(window);
 

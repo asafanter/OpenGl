@@ -250,6 +250,9 @@ GL &GL::initCamera()
     _camera.pos = glm::vec3(0.0, 0.0, 3.0);
     _camera.front = glm::vec3(0.0, 0.0, -1.0);
     _camera.up = glm::vec3(0.0, 1.0, 0.0);
+    _camera.yaw = -90.0;
+    _camera.pitch = 0.0;
+    _camera.roll = 0.0;
 
     return *this;
 }

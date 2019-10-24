@@ -7,9 +7,9 @@
 
 namespace GL {
 
-std::function<void(real64, real64)> Window::_on_mouse_moved = std::function<void(real64, real64)>();
-std::function<void(uint32, uint32)> Window::_handler_size_changed = std::function<void(uint32, uint32)>();
-std::function<void(int32, int32)> Window::_handler_key_pressed = std::function<void(int32, int32)>();
+std::function<void(real64, real64)> Window::_on_mouse_moved = nullptr;
+std::function<void(uint32, uint32)> Window::_handler_size_changed = nullptr;
+std::function<void(int32, int32)> Window::_handler_key_pressed = nullptr;
 
 Window::Window(const uint16 &width, const uint16 &height, const string &title) :
     _window(nullptr),
@@ -76,6 +76,13 @@ Window Window::close()
     return *this;
 }
 
+const Window &Window::maximize() const
+{
+    glfwMaximizeWindow(_window);
+
+    return *this;
+}
+
 Window &Window::swapBuffers()
 {
     glfwSwapBuffers(_window);
@@ -119,7 +126,12 @@ void Window::onSizeChanged(GLFWwindow* window, int32 width, int32 height)
 {
     (void)window;
 
-    _handler_size_changed(UINT32(width), UINT32(height));
+    glViewport(0, 0, INT32(width), INT32(height));
+
+    if(_handler_size_changed)
+    {
+        _handler_size_changed(UINT32(width), UINT32(height));
+    }
 }
 
 void Window::onKeyPressed(GLFWwindow *window, int32 key, int32 scan_code, int32 action, int32 mods)
@@ -128,14 +140,20 @@ void Window::onKeyPressed(GLFWwindow *window, int32 key, int32 scan_code, int32 
     (void)scan_code;
     (void)mods;
 
-    _handler_key_pressed(key, action);
+    if(_handler_key_pressed)
+    {
+        _handler_key_pressed(key, action);
+    }
 }
 
 void Window::onMouseMoved(GLFWwindow *window, real64 x, real64 y)
 {
     (void)window;
 
-    _on_mouse_moved(x, y);
+    if(_on_mouse_moved)
+    {
+        _on_mouse_moved(x, y);
+    }
 }
 
 Window& Window::init()

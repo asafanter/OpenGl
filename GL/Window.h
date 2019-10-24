@@ -25,6 +25,7 @@ public:
     Window &setOnKeyPressedHandler(std::function<void(int32, int32)> handler);
     Window &setOnMouseMovedHandler(std::function<void(real64, real64)> handler);
     Window close();
+    const Window &maximize() const;
     Window &setBackgroundColor(const Color &color) {_background_color = color; return *this;}
     Color getBackgroundColor() const {return _background_color;}
     uint16 getWidth() const {return _width;}
