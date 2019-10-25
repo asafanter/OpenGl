@@ -96,7 +96,7 @@ int main()
                      16, 18, 19, 16, 17, 19,
                      20, 22, 23, 20, 21, 23
                      });
-    cube.setup();
+//    cube.setup();
 
     gl.addMesh(cube);
 
