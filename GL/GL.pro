@@ -13,9 +13,13 @@ SOURCES += \
     VertexShader.cpp \
     FragmentShader.cpp \
     Program.cpp \
-    Vertex.cpp \
     Texture.cpp \
-    Mesh.cpp
+    Mesh.cpp \
+    TexturedVertex.cpp \
+    ColoredVertex.cpp \
+    Vertex.cpp \
+    ColoredBuffer.cpp \
+    TexturedBuffer.cpp
 
 INCLUDEPATH += $$PWD/bin
 DEPENDPATH += $$PWD/bin
@@ -33,9 +37,14 @@ HEADERS += \
     VertexShader.h \
     FragmentShader.h \
     Program.h \
-    Vertex.h \
     Texture.h \
-    Mesh.h
+    Mesh.h \
+    TexturedVertex.h \
+    ColoredVertex.h \
+    Vertex.h \
+    ColoredBuffer.h \
+    Buffer.h \
+    TexturedBuffer.h
 
 DISTFILES += \
     Vertex.vsh \

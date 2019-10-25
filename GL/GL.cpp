@@ -62,6 +62,8 @@ void GL::run(const Program &program)
     while(_window->isOpen())
     {
         clearBackgroundColor();
+
+
         program.use();
 
         handleInput();

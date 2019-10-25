@@ -1,20 +1,52 @@
 #include <glad/glad.h>
 
 #include "Mesh.h"
+#include "TexturedBuffer.h"
 
 namespace GL {
 
 Mesh::Mesh() :
-    _vertices(),
     _indices(),
-    _texture(),
     _vao(0),
     _vbo(0),
     _ebo(0),
     _model(glm::mat4(1.0)),
-    _is_setup(false)
+    _is_setup(false),
+    _is_textured(false)
 {
 
+}
+
+Mesh &Mesh::setupBuffer(const Buffer &buffer)
+{
+    const TexturedBuffer *tmp = dynamic_cast<const TexturedBuffer*>(&buffer);
+    _is_textured = tmp != nullptr;
+
+    if(_indices.empty())
+    {
+        std::cerr << "must set indices before setup buffer" << std::endl;
+    }
+
+    glGenVertexArrays(1, &_vao);
+    glGenBuffers(1, &_vbo);
+    glGenBuffers(1, &_ebo);
+
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+    buffer.setupVertices();
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, INT64(_indices.size() * sizeof(uint32)),
+                 _indices.data(), GL_STATIC_DRAW);
+
+    buffer.setupAttributes();
+
+    glBindVertexArray(0);
+
+    _is_setup = true;
+
+    return *this;
 }
 
 Mesh &Mesh::rotate(const real64 &x_deg, const real64 &y_deg, const real64 &z_deg)
@@ -112,40 +144,6 @@ Mesh &Mesh::setPosition(const real64 &x, const real64 &y, const real64 &z)
     return *this;
 }
 
-GL::Mesh &GL::Mesh::setup()
-{
-    glGenVertexArrays(1, &_vao);
-    glGenBuffers(1, &_vbo);
-    glGenBuffers(1, &_ebo);
-
-    glBindVertexArray(_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-
-    glBufferData(GL_ARRAY_BUFFER, INT64(_vertices.size() * sizeof(Vertex)), _vertices.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, INT64(_indices.size() * sizeof(uint32)),
-                 _indices.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof (real32) * 3));
-    glEnableVertexAttribArray(1);
-
-    if(!_texture.isEmpty())
-    {
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(sizeof (real32) * 7));
-        glEnableVertexAttribArray(2);
-    }
-
-    glBindVertexArray(0);
-
-    _is_setup = true;
-
-    return *this;
-}
-
 void Mesh::remove()
 {
     glDeleteVertexArrays(1, &_vao);
@@ -162,14 +160,24 @@ Mesh &Mesh::draw(const Program &program)
 
     glBindVertexArray(_vao);
 
-    trySetTexture();
+    if(_is_textured)
+    {
+        glBindTexture(GL_TEXTURE_2D, 2);
+
+        auto loc = glGetUniformLocation(program.getID(), "is_texture_set");
+        glUniform1i(loc, 1);
+    }
 
     program.setMatrix4("model", _model);
 
     glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
 
     glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+
+    if(_is_textured)
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
     return *this;
 }
@@ -182,13 +190,7 @@ bool Mesh::isSetupForDrawing() const
         return false;
     }
 
-    if(_vertices.empty())
-    {
-        std::cerr << "vertices have not set" << std::endl;
-        return false;
-    }
-
-    if(_vertices.empty())
+    if(_indices.empty())
     {
         std::cerr << "indices have not set" << std::endl;
         return false;
@@ -196,25 +198,6 @@ bool Mesh::isSetupForDrawing() const
 
     return true;
 }
-
-Mesh &Mesh::trySetTexture()
-{
-    glBindTexture(GL_TEXTURE_2D, _texture.getID());
-
-    if(!_texture.isEmpty())
-    {
-        auto loc = glGetUniformLocation(1, "is_texture_set");
-        glUniform1i(loc, 1);
-    }
-    else
-    {
-        auto loc = glGetUniformLocation(1, "is_texture_set");
-        glUniform1i(loc, 0);
-    }
-
-    return *this;
-}
-
 
 } //namespace GL
 

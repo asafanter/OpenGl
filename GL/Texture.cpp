@@ -106,8 +106,11 @@ Texture &Texture::setImage(const string &image_file_name)
     _height = UINT16(height);
     _num_of_components = UINT16(num_of_components);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, _data);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    if(_data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, _data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
 
     stbi_image_free(_data);
 
