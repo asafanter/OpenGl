@@ -25,26 +25,5 @@ void TexturedBuffer::setupAttributes() const
     glEnableVertexAttribArray(2);
 }
 
-TexturedBuffer &TexturedBuffer::setTexture(const Texture &texture)
-{
-    _texture = texture;
-
-    glBindTexture(GL_TEXTURE_2D, _texture.getID());
-
-    if(!_texture.isEmpty())
-    {
-        auto loc = glGetUniformLocation(1, "is_texture_set");
-        glUniform1i(loc, 1);
-    }
-    else
-    {
-        auto loc = glGetUniformLocation(1, "is_texture_set");
-        glUniform1i(loc, 0);
-    }
-
-    return *this;
-}
-
-
 } //namespace GL
 

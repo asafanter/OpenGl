@@ -20,6 +20,13 @@ class Mesh
 {
 public:
 
+    enum class Premitive
+    {
+        TRIANGLES,
+        LINES,
+        POINTS
+    };
+
     Mesh();
     Mesh &setupBuffer(const Buffer &buffer);
     Mesh &setIndices(const std::vector<uint32> &indices) {_indices = indices; return *this;}
@@ -36,6 +43,7 @@ public:
     Mesh &translateY(const real64 &offset);
     Mesh &translateZ(const real64 &offset);
     Mesh &setPosition(const real64 &x, const real64 &y, const real64 &z);
+    Mesh &setPrimitive(const Mesh::Premitive &new_premitive) {_premitive = new_premitive; return *this;}
     Mesh &setup();
     void remove();
     Mesh &draw(const Program &program);
@@ -43,6 +51,7 @@ public:
 private: //methods
     bool isSetupForDrawing() const;
     Mesh &trySetTexture();
+    Mesh &drawPremitives();
 
 private: //members
     std::vector<uint32> _indices;
@@ -52,6 +61,7 @@ private: //members
     glm::mat4 _model;
     bool _is_setup;
     bool _is_textured;
+    Premitive _premitive;
 };
 
 } //namespace GL

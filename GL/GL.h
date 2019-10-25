@@ -50,7 +50,7 @@ private: //defs
         bool is_right_button_pressed;
         real64 last_x;
         real64 last_y;
-        const real64 sensitivity = 0.01;
+        const real64 sensitivity = 0.003;
     };
 
 private: //methods

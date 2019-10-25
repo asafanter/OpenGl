@@ -16,6 +16,7 @@ public:
     ColoredBuffer &setVertices(const std::vector<ColoredVertex> &new_vertices) {_vertices = new_vertices; return *this;}
     virtual void setupVertices() const;
     virtual void setupAttributes() const;
+    virtual uint32 getNumOfVertices() const {return UINT32(_vertices.size());}
 
 private:
     std::vector<ColoredVertex> _vertices;

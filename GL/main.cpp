@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -141,6 +142,44 @@ int main()
     program.attachShader(v_s).attachShader(f_s);
     program.link();
 
+
+    GL::ColoredBuffer point_cloud_buffer;
+    std::vector<GL::ColoredVertex> point_cloud_vertices;
+
+    for(int32 r_id = 0; r_id < 3; r_id++)
+    {
+        real32 r = 0.3f + 0.1f * r_id;
+        for(int32 v_id = 0; v_id < 100; v_id++)
+        {
+            real32 v = 1.8f * v_id;
+            for(int32 h_id = 0; h_id < 100; h_id++)
+            {
+                real32 h = 7.2f * h_id;
+                real32 x = REAL32(REAL64(r) * sin(REAL64(h) * M_PI / 180.0) * cos(REAL64(v) * M_PI / 180.0));
+                real32 y = REAL32(REAL64(r) * sin(REAL64(h) * M_PI / 180.0) * sin(REAL64(v) * M_PI / 180.0));
+                real32 z = REAL32(REAL64(r) * cos(REAL64(h) * M_PI / 180.0));
+                GL::ColoredVertex cv(x, y , z, GL::Color(GL::Color::BLUE));
+
+                point_cloud_vertices.emplace_back(cv);
+            }
+        }
+    }
+
+    std::vector<uint32> point_cloud_indices;
+    for(int i = 0; i < 30000; i++)
+    {
+        point_cloud_indices.emplace_back(i);
+    }
+
+    point_cloud_buffer.setVertices(point_cloud_vertices);
+
+    GL::Mesh point_cloud;
+    point_cloud.setPrimitive(GL::Mesh::Premitive::POINTS);
+    gl.setPointSize(3);
+    point_cloud.setIndices(point_cloud_indices);
+
+    point_cloud.setupBuffer(point_cloud_buffer);
+
     GL::TexturedBuffer buffer;
     buffer.setVertices(vertices);
 
@@ -157,9 +196,11 @@ int main()
                      16, 18, 19, 16, 17, 19,
                      20, 22, 23, 20, 21, 23
                      });
+
     cube.setupBuffer(buffer);
 
-    gl.addMesh(cube);
+
+    gl.addMesh(point_cloud);
 
 
     gl.run(program);

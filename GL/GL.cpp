@@ -63,7 +63,6 @@ void GL::run(const Program &program)
     {
         clearBackgroundColor();
 
-
         program.use();
 
         handleInput();
@@ -71,7 +70,6 @@ void GL::run(const Program &program)
 
         for(auto &mesh : _meshes)
         {
-//            mesh.rotateY(0.07);
             mesh.draw(program);
         }
 
@@ -254,11 +252,6 @@ GL &GL::setMouseMovedHandler()
 
             _camera.pos += offset;
         }
-
-
-
-
-
     });
 
     return *this;

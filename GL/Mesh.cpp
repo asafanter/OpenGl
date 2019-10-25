@@ -12,19 +12,30 @@ Mesh::Mesh() :
     _ebo(0),
     _model(glm::mat4(1.0)),
     _is_setup(false),
-    _is_textured(false)
+    _is_textured(false),
+    _premitive(Premitive::TRIANGLES)
 {
 
 }
 
 Mesh &Mesh::setupBuffer(const Buffer &buffer)
 {
-    const TexturedBuffer *tmp = dynamic_cast<const TexturedBuffer*>(&buffer);
-    _is_textured = tmp != nullptr;
+    const TexturedBuffer *textured_buffer = dynamic_cast<const TexturedBuffer*>(&buffer);
+    _is_textured = textured_buffer != nullptr;
+
+    if(_is_textured && textured_buffer->getTexture().isEmpty())
+    {
+        std::cerr << "buffer has no texture" << std::endl;
+    }
 
     if(_indices.empty())
     {
         std::cerr << "must set indices before setup buffer" << std::endl;
+    }
+
+    if(buffer.getNumOfVertices() == 0)
+    {
+        std::cerr << "buffer has no vertices" << std::endl;
     }
 
     glGenVertexArrays(1, &_vao);
@@ -51,7 +62,6 @@ Mesh &Mesh::setupBuffer(const Buffer &buffer)
 
 Mesh &Mesh::rotate(const real64 &x_deg, const real64 &y_deg, const real64 &z_deg)
 {
-
     rotateX(x_deg);
     rotateY(y_deg);
     rotateZ(z_deg);
@@ -160,17 +170,21 @@ Mesh &Mesh::draw(const Program &program)
 
     glBindVertexArray(_vao);
 
+    auto loc = glGetUniformLocation(program.getID(), "is_texture_set");
     if(_is_textured)
     {
         glBindTexture(GL_TEXTURE_2D, 2);
 
-        auto loc = glGetUniformLocation(program.getID(), "is_texture_set");
         glUniform1i(loc, 1);
+    }
+    else
+    {
+        glUniform1i(loc, 0);
     }
 
     program.setMatrix4("model", _model);
 
-    glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+    drawPremitives();
 
     glBindVertexArray(0);
 
@@ -197,6 +211,24 @@ bool Mesh::isSetupForDrawing() const
     }
 
     return true;
+}
+
+Mesh &Mesh::drawPremitives()
+{
+    if(_premitive == Premitive::TRIANGLES)
+    {
+        glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+    else if(_premitive == Premitive::LINES)
+    {
+        glDrawElements(GL_LINES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+    else if(_premitive == Premitive::POINTS)
+    {
+        glDrawElements(GL_POINTS, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+
+    return *this;
 }
 
 } //namespace GL

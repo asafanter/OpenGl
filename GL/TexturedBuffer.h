@@ -17,7 +17,9 @@ public:
     TexturedBuffer &setVertices(const std::vector<TexturedVertex> &new_vertices) {_vertices = new_vertices; return *this;}
     virtual void setupVertices() const;
     virtual void setupAttributes() const;
-    TexturedBuffer &setTexture(const Texture &texture);
+    TexturedBuffer &setTexture(const Texture &texture) {_texture = texture; return *this;}
+    const Texture& getTexture() const {return _texture;}
+    virtual uint32 getNumOfVertices() const {return UINT32(_vertices.size());}
 
 private:
     std::vector<TexturedVertex> _vertices;
