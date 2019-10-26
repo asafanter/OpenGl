@@ -2,19 +2,19 @@
 
 namespace GL {
 
-Vertex::Vertex(const real32 &x, const real32 &y, const real32 &z) :
-    _x(x),
-    _y(y),
-    _z(z)
+Vertex::Vertex(const real64 &x, const real64 &y, const real64 &z) :
+    _x(REAL32(x)),
+    _y(REAL32(y)),
+    _z(REAL32(z))
 {
 
 }
 
-Vertex &Vertex::setCoords(const real32 &new_x, const real32 &new_y, const real32 &new_z)
+Vertex &Vertex::setCoords(const real64 &new_x, const real64 &new_y, const real64 &new_z)
 {
-    _x = new_x;
-    _y = new_y;
-    _z = new_z;
+    _x = REAL32(new_x);
+    _y = REAL32(new_y);
+    _z = REAL32(new_z);
 
     return *this;
 }

@@ -1,6 +1,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "GL_types.h"
+
 namespace GL {
 
 class Color
@@ -17,13 +19,12 @@ public:
         YELLOW
     };
 
-    Color();
-    Color(const float &r, const float& g, const float &b, const float &a);
+    Color(const uint32 &r = 0, const uint32& g = 0, const uint32 &b = 0, const uint32 &a = 255);
     Color(const Color::Dye &dye);
-    Color &setRed(const float &new_red);
-    Color &setGreen(const float &new_green);
-    Color &setBlue(const float &new_blue);
-    Color &setAlpha(const float &new_alpha);
+    Color &setRed(const uint32 &new_red);
+    Color &setGreen(const uint32 &new_green);
+    Color &setBlue(const uint32 &new_blue);
+    Color &setAlpha(const uint32 &new_alpha);
     float getRed() const {return _r;}
     float getGreen() const {return _g;}
     float getBlue() const {return _b;}

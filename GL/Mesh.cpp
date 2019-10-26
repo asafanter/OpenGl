@@ -14,7 +14,6 @@ Mesh::Mesh() :
     _is_setup(false),
     _is_textured(false),
     _premitive(Premitive::TRIANGLES),
-    _is_drawing_with_indices(false),
     _num_of_vertices(0),
     _is_static(false)
 {
@@ -148,11 +147,9 @@ Mesh &Mesh::translateZ(const real64 &offset)
 
 Mesh &Mesh::setPosition(const real64 &x, const real64 &y, const real64 &z)
 {
-//    _model = glm::mat4(1.0);
-//    _model = glm::translate(_model, glm::vec3(x, y, z));
-    _model[3].x = x;
-    _model[3]. y = y;
-    _model[3].z = z;
+    _model[3].x = REAL32(x);
+    _model[3]. y =REAL32(y);
+    _model[3].z = REAL32(z);
 
     return *this;
 }
@@ -207,20 +204,16 @@ bool Mesh::isSetupForDrawing() const
         return false;
     }
 
-    if(_is_drawing_with_indices && _indices.empty())
-    {
-        std::cerr << "indices have not set" << std::endl;
-        return false;
-    }
-
     return true;
 }
 
 Mesh &Mesh::drawPremitives()
 {
+    bool is_drawing_with_indices = _indices.size() > 0;
+
     if(_premitive == Premitive::TRIANGLES)
     {
-        if(_is_drawing_with_indices)
+        if(is_drawing_with_indices)
         {
             glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
         }
@@ -231,7 +224,7 @@ Mesh &Mesh::drawPremitives()
     }
     else if(_premitive == Premitive::LINES)
     {
-        if(_is_drawing_with_indices)
+        if(is_drawing_with_indices)
         {
             glDrawElements(GL_LINES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
         }
@@ -242,7 +235,7 @@ Mesh &Mesh::drawPremitives()
     }
     else if(_premitive == Premitive::POINTS)
     {
-        if(_is_drawing_with_indices)
+        if(is_drawing_with_indices)
         {
             glDrawElements(GL_POINTS, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
         }

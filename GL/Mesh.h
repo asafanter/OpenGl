@@ -44,7 +44,6 @@ public:
     Mesh &translateZ(const real64 &offset);
     Mesh &setPosition(const real64 &x, const real64 &y, const real64 &z);
     Mesh &setPrimitive(const Mesh::Premitive &new_premitive) {_premitive = new_premitive; return *this;}
-    Mesh &setIndicesDrawing(const bool &new_val) {_is_drawing_with_indices = new_val;; return *this;}
     Mesh &setStatic(const bool &new_val) {_is_static = new_val; return *this;}
     bool isStatic()const {return _is_static;}
     void remove();
@@ -64,7 +63,6 @@ private: //members
     bool _is_setup;
     bool _is_textured;
     Premitive _premitive;
-    bool _is_drawing_with_indices;
     uint32 _num_of_vertices;
     bool _is_static;
 };

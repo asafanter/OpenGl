@@ -9,9 +9,9 @@ namespace GL {
 class TexturedVertex : public Vertex
 {
 public:
-    TexturedVertex(const real32 &x = 0.0, const real32 &y = 0.0, const real32 &z = 0.0,
-                   const real32 &x_texture = 0.0, const real32 &y_texture = 0.0);
-    Vertex &setTextureCoords(const real32 &new_x, const real32 &new_y);
+    TexturedVertex(const real64 &x = 0.0, const real64 &y = 0.0, const real64 &z = 0.0,
+                   const real64 &x_texture = 0.0, const real64 &y_texture = 0.0);
+    Vertex &setTextureCoords(const real64 &new_x, const real64 &new_y);
     real32 getXTexture() const {return _x_texture;}
     real32 getYTexture() const {return _y_texture;}
 

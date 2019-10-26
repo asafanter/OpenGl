@@ -2,7 +2,7 @@
 
 namespace GL {
 
-ColoredVertex::ColoredVertex(const real32 &x, const real32 &y, const real32 &z, const Color &color) :
+ColoredVertex::ColoredVertex(const real64 &x, const real64 &y, const real64 &z, const Color &color) :
     Vertex(x, y, z),
     _color(color)
 {
