@@ -13,7 +13,10 @@ Mesh::Mesh() :
     _model(glm::mat4(1.0)),
     _is_setup(false),
     _is_textured(false),
-    _premitive(Premitive::TRIANGLES)
+    _premitive(Premitive::TRIANGLES),
+    _is_drawing_with_indices(false),
+    _num_of_vertices(0),
+    _is_static(false)
 {
 
 }
@@ -28,12 +31,9 @@ Mesh &Mesh::setupBuffer(const Buffer &buffer)
         std::cerr << "buffer has no texture" << std::endl;
     }
 
-    if(_indices.empty())
-    {
-        std::cerr << "must set indices before setup buffer" << std::endl;
-    }
+    _num_of_vertices = buffer.getNumOfVertices();
 
-    if(buffer.getNumOfVertices() == 0)
+    if(_num_of_vertices == 0)
     {
         std::cerr << "buffer has no vertices" << std::endl;
     }
@@ -148,8 +148,11 @@ Mesh &Mesh::translateZ(const real64 &offset)
 
 Mesh &Mesh::setPosition(const real64 &x, const real64 &y, const real64 &z)
 {
-    _model = glm::mat4(1.0);
-    _model = glm::translate(_model, glm::vec3(x, y, z));
+//    _model = glm::mat4(1.0);
+//    _model = glm::translate(_model, glm::vec3(x, y, z));
+    _model[3].x = x;
+    _model[3]. y = y;
+    _model[3].z = z;
 
     return *this;
 }
@@ -204,7 +207,7 @@ bool Mesh::isSetupForDrawing() const
         return false;
     }
 
-    if(_indices.empty())
+    if(_is_drawing_with_indices && _indices.empty())
     {
         std::cerr << "indices have not set" << std::endl;
         return false;
@@ -217,15 +220,37 @@ Mesh &Mesh::drawPremitives()
 {
     if(_premitive == Premitive::TRIANGLES)
     {
-        glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+        if(_is_drawing_with_indices)
+        {
+            glDrawElements(GL_TRIANGLES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+        }
+        else
+        {
+            glDrawArrays(GL_TRIANGLES, 0, INT32(_num_of_vertices));
+        }
     }
     else if(_premitive == Premitive::LINES)
     {
-        glDrawElements(GL_LINES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+        if(_is_drawing_with_indices)
+        {
+            glDrawElements(GL_LINES, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+        }
+        else
+        {
+            glDrawArrays(GL_LINES, 0, INT32(_num_of_vertices));
+        }
     }
     else if(_premitive == Premitive::POINTS)
     {
-        glDrawElements(GL_POINTS, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+        if(_is_drawing_with_indices)
+        {
+            glDrawElements(GL_POINTS, INT32(_indices.size()), GL_UNSIGNED_INT, nullptr);
+        }
+        else
+        {
+            glDrawArrays(GL_POINTS, 0, INT32(_num_of_vertices));
+        }
+
     }
 
     return *this;

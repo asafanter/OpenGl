@@ -47,9 +47,10 @@ private: //defs
     {
         bool is_new_movement;
         bool is_left_button_pressed;
-        bool is_right_button_pressed;
         real64 last_x;
         real64 last_y;
+        real64 x_offset;
+        real64 y_offset;
         const real64 sensitivity = 0.003;
     };
 

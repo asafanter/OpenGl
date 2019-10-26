@@ -70,8 +70,21 @@ void GL::run(const Program &program)
 
         for(auto &mesh : _meshes)
         {
+            if(mesh.isStatic())
+            {
+                //TODO add pos to mesh
+                glm::vec3 new_pos = _camera.pos + 3.0f * _camera.front;
+                new_pos += glm::vec3(-1.7f, -1.0f, 0.0f);
+                mesh.setPosition(new_pos.x, new_pos.y, new_pos.z);
+            }
+
+            mesh.rotateX(_mouse.y_offset * 70);
+            mesh.rotateY(_mouse.x_offset * 70);
             mesh.draw(program);
         }
+
+        _mouse.x_offset = 0.0;
+        _mouse.y_offset = 0.0;
 
         _window->swapBuffers();
         _window->pollEvents();
@@ -216,35 +229,18 @@ GL &GL::setMouseMovedHandler()
             _mouse.is_new_movement = false;
         }
 
-        auto x_offset = _mouse.last_x - x;
-        auto y_offset = _mouse.last_y - y;
+        auto x_offset = (_mouse.last_x - x) * _mouse.sensitivity;
+        auto y_offset = (y -_mouse.last_y) * _mouse.sensitivity;
         _mouse.last_x = x;
         _mouse.last_y = y;
 
-        x_offset *= _mouse.sensitivity;
-        y_offset *= -_mouse.sensitivity;
-
-
-
         if(_keys[GLFW_KEY_X])
         {
-            _camera.pitch += limitAngle(y_offset * 5, -_camera.MAX_PITCH_ANGLE_DEG, _camera.MAX_PITCH_ANGLE_DEG);
-
-            glm::dvec3 tmp_front;
-            tmp_front.x = cos(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-            tmp_front.y = sin(glm::radians(_camera.pitch));
-            tmp_front.z = sin(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-            _camera.front = glm::normalize(tmp_front);
+            _mouse.y_offset = y_offset;
         }
         else if(_keys[GLFW_KEY_Y])
         {
-            _camera.yaw += x_offset * 5;
-
-            glm::dvec3 tmp_front;
-            tmp_front.x = cos(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-            tmp_front.y = sin(glm::radians(_camera.pitch));
-            tmp_front.z = sin(glm::radians(_camera.yaw)) * cos(glm::radians(_camera.pitch));
-            _camera.front = glm::normalize(tmp_front);
+            _mouse.x_offset = x_offset;
         }
         else
         {
@@ -269,14 +265,6 @@ GL &GL::setMouseClickedHandler()
         if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
         {
             _mouse.is_left_button_pressed = false;
-        }
-        if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-        {
-            _mouse.is_right_button_pressed = true;
-        }
-        if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
-        {
-            _mouse.is_right_button_pressed = false;
         }
     });
 
