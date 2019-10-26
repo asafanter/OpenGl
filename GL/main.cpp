@@ -197,7 +197,22 @@ int main()
     GL::ColoredVertex as5(0.0f, 0.0f, 0.0f, GL::Color(GL::Color::BLUE));
     GL::ColoredVertex as6(0.0f, 0.0f, 0.2f, GL::Color(GL::Color::BLUE));
 
-    std::vector<GL::ColoredVertex> axis_system_vertices = {as1, as2, as3, as4, as5, as6};
+    GL::ColoredVertex as7(0.2f, 0.0f, 0.0f, GL::Color(GL::Color::RED));
+    GL::ColoredVertex as8(0.17f, 0.03f, 0.0f, GL::Color(GL::Color::RED));
+    GL::ColoredVertex as9(0.2f, 0.0f, 0.0f, GL::Color(GL::Color::RED));
+    GL::ColoredVertex as10(0.17f, -0.03f, 0.0f, GL::Color(GL::Color::RED));
+    GL::ColoredVertex as11(0.0f, 0.2f, 0.0f, GL::Color(GL::Color::GREEN));
+    GL::ColoredVertex as12(-0.03f, 0.17f, 0.0f, GL::Color(GL::Color::GREEN));
+    GL::ColoredVertex as13(0.0f, 0.2f, 0.0f, GL::Color(GL::Color::GREEN));
+    GL::ColoredVertex as14(0.03f, 0.17f, 0.0f, GL::Color(GL::Color::GREEN));
+    GL::ColoredVertex as15(0.0f, 0.0f, 0.2f, GL::Color(GL::Color::BLUE));
+    GL::ColoredVertex as16(-0.03f, 0.0f, 0.17f, GL::Color(GL::Color::BLUE));
+    GL::ColoredVertex as17(0.0f, 0.0f, 0.2f, GL::Color(GL::Color::BLUE));
+    GL::ColoredVertex as18(0.03f, 0.0f, 0.17f, GL::Color(GL::Color::BLUE));
+
+    std::vector<GL::ColoredVertex> axis_system_vertices = {as1, as2, as3, as4, as5, as6,
+                                                          as7, as8, as9, as10, as11, as12,
+                                                          as13, as14, as15, as16, as17, as18};
     GL::ColoredBuffer axis_system_buffer;
     axis_system_buffer.setVertices(axis_system_vertices);
 
@@ -214,7 +229,7 @@ int main()
     std::vector<GL::ColoredVertex> surface_vertices;
     for(int i = 0; i < 21; i++)
     {
-        real32 c = 80.0f/255.0f;
+        real32 c = 40.0f/255.0f;
         GL::ColoredVertex v1(-1.0f + (1.0f/10.0f) * i, -1.0f, 0.0f, GL::Color(c, c, c, 1.0f));
         GL::ColoredVertex v2(-1.0f + (1.0f/10.0f) * i, 1.0f, 0.0f, GL::Color(c, c, c, 1.0f));
         surface_vertices.emplace_back(v1);
